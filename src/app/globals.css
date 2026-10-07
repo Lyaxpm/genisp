@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand: #0d627c;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-slate-50 text-slate-800 antialiased;
+}
+
+/* scrollbar halus */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { @apply bg-slate-300 rounded-full; }
+::-webkit-scrollbar-thumb:hover { @apply bg-slate-400; }
+
+@layer components {
+  .card {
+    @apply bg-white rounded-2xl shadow-card border border-slate-100 p-5;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition active:scale-[.98] disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .btn-primary {
+    @apply btn bg-brand-500 text-white hover:bg-brand-600 shadow-soft;
+  }
+  .btn-outline {
+    @apply btn border border-slate-200 bg-white hover:bg-slate-50 text-slate-700;
+  }
+  .btn-danger {
+    @apply btn bg-red-500 text-white hover:bg-red-600;
+  }
+  .input {
+    @apply w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 transition placeholder:text-slate-400;
+  }
+  .label {
+    @apply block text-xs font-semibold uppercase tracking-wide text-slate-500 mb-1.5;
+  }
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+  .th {
+    @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap;
+  }
+  .td {
+    @apply px-4 py-3 text-sm text-slate-700;
+  }
+}
+
+/* ===== Animasi halus ===== */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@layer utilities {
+  .animate-fade-up { animation: fade-up 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+  .animate-fade-in { animation: fade-in 0.5s ease both; }
+  .animate-float-soft { animation: float-soft 7s ease-in-out infinite; }
+  .animate-float-slower { animation: float-soft 11s ease-in-out infinite; }
+}
