@@ -53,5 +53,7 @@ export const BACKUP_TABLES = [
   "voip_numbers",
   "onu_devices",
   "map_cables",
+  "genieacs_links",
+  "genieacs_actions",
   "fcm_tokens",
 ] as const;

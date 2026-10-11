@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 // Detail wallet + riwayat ledger (staff).
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("wallet");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const rows = await db`select * from wallet_accounts where id = ${Number(params.id)}`;

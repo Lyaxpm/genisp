@@ -13,7 +13,7 @@ const NO_HASH_TABLES: Record<string, string> = {
 };
 
 export async function GET() {
-  const s = await getSession();
+  const s = await getSession("sistem");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   if (s.role !== "superadmin") return fail("Khusus superadmin", 403);
   const db = sql();

@@ -6,7 +6,7 @@ import { ok, fail } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("sistem");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const sp = req.nextUrl.searchParams;
   const page = Math.max(1, parseInt(sp.get("page") ?? "1", 10) || 1);

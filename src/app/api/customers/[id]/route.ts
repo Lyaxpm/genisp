@@ -15,7 +15,7 @@ const UPDATABLE = [
 ];
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("pelanggan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const rows = await db`select c.*, p.name as package_name from customers c
@@ -27,7 +27,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 }
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("pelanggan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   if (!body) return fail("Body tidak valid", 400);
@@ -57,11 +57,12 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     values as never[]
   );
   if (!rows.length) return fail("Pelanggan tidak ditemukan", 404);
-  return ok(rows[0]);
+  const { password_hash: _hash, ...customer } = rows[0];
+  return ok(customer);
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("pelanggan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const rows = await db`delete from customers where id = ${params.id} returning id`;

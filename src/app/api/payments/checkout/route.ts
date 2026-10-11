@@ -10,7 +10,7 @@ import {
   createBniVA,
 } from "@/lib/gateways";
 import { validateCoupon, consumeCoupon, type CouponRow } from "@/lib/coupons";
-import { settleInvoiceByPayment, type PaymentRow } from "@/lib/settle";
+import { settleInTransaction, sendSettlementNotice, type PaymentRow } from "@/lib/settle";
 import { ok, fail, randomCode } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -34,7 +34,7 @@ async function getSetting(db: Sql, key: string): Promise<string> {
 }
 
 export async function POST(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("tagihan");
   if (!s || (s.kind !== "staff" && s.kind !== "member")) return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   const invoice_id = Number(body?.invoice_id);
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
   const ppn = Math.round((afterDiscount * ppnPercent) / 100);
   const total = afterDiscount + ppn;
 
-  const externalId = `GENISP-${invoice.id}-${Date.now()}`;
+  const externalId = `GENISP-${invoice.id}-${Date.now()}-${randomCode(6)}`;
   const rawBreakdown = {
     subtotal,
     discount,
@@ -90,45 +90,27 @@ export async function POST(req: NextRequest) {
     total,
   };
 
-  const payRow = (
-    await db`insert into payments (invoice_id, gateway, external_id, amount, status, raw)
-      values (${invoice.id}, ${gateway}, ${externalId}, ${total}, 'pending', ${JSON.stringify(rawBreakdown)}::jsonb)
-      returning *`
-  )[0] as unknown as PaymentRow & { id: number };
-
-  if (coupon) {
-    await consumeCoupon(
-      db,
-      coupon,
-      discount,
-      invoice.id,
-      s.kind === "member" ? s.id : invoice.customer_id
-    );
+  if (!Number.isFinite(total) || total < 0) return fail("Total pembayaran tidak valid", 400);
+  let checkout;
+  try {
+    checkout = await db.begin(async tx => {
+      const [current] = await tx`select status, amount, customer_id from invoices where id = ${invoice.id} for update`;
+      if (!current || current.status === "paid" || current.status === "cancelled") throw new Error("Invoice sudah lunas atau dibatalkan");
+      if (Number(current.amount) !== Number(invoice.amount) || Number(current.customer_id) !== Number(invoice.customer_id)) throw new Error("Tagihan berubah. Muat ulang sebelum membayar.");
+      const [payment] = await tx`insert into payments (invoice_id, gateway, external_id, amount, status, raw)
+        values (${invoice.id}, ${gateway}, ${externalId}, ${total}, 'pending', ${JSON.stringify(rawBreakdown)}::jsonb) returning *`;
+      if (coupon) await consumeCoupon(tx, coupon, discount, invoice.id, invoice.customer_id);
+      const settlement = gateway === "wallet" ? await settleInTransaction(tx, Number(payment.id)) : null;
+      return { payment: payment as unknown as PaymentRow, settlement };
+    });
+  } catch (e) {
+    return fail(e instanceof Error ? e.message : "Pembayaran gagal", 400);
   }
-
-  // ---- Wallet: debit langsung lalu settle ----
-  if (gateway === "wallet") {
-    const wRows = await db`select * from wallet_accounts where owner_type = 'customer' and owner_id = ${s.id}`;
-    let wallet = wRows[0] as unknown as { id: number; balance: number | string } | undefined;
-    if (!wallet) {
-      const ins = await db`insert into wallet_accounts (owner_type, owner_id, balance)
-        values ('customer', ${s.id}, 0) returning *`;
-      wallet = ins[0] as unknown as { id: number; balance: number | string };
-    }
-    if (Number(wallet.balance) < total) {
-      await db`update payments set status = 'failed' where id = ${payRow.id}`;
-      return fail(
-        `Saldo wallet tidak cukup (butuh Rp ${total.toLocaleString("id-ID")}). Silakan top up dulu.`,
-        400
-      );
-    }
-    const newBalance = Number(wallet.balance) - total;
-    await db`update wallet_accounts set balance = ${newBalance}, updated_at = now() where id = ${wallet.id}`;
-    await db`insert into wallet_ledger (wallet_id, direction, amount, balance_after, reference_type, reference_id, description)
-      values (${wallet.id}, 'debit', ${total}, ${newBalance}, 'invoice_payment', ${payRow.id},
-        ${"Bayar invoice " + invoice.code})`;
-    const r = await settleInvoiceByPayment(db, { ...payRow, status: "pending" });
-    return ok({ wallet: true, settled: !r.already, payment: payRow, breakdown: rawBreakdown });
+  const payRow = checkout.payment;
+  if (checkout.settlement) {
+    await sendSettlementNotice(db, checkout.settlement);
+    return ok({ wallet: true, settled: !checkout.settlement.already,
+      payment: checkout.settlement.payment ?? payRow, breakdown: rawBreakdown });
   }
 
   const instruction =

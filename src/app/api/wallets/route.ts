@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 // Daftar semua wallet (staff).
 export async function GET() {
-  const s = await getSession();
+  const s = await getSession("wallet");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const rows = await db`select w.*,

@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 // Data agregat untuk peta dashboard: ODC, ODP, pelanggan berkoordinat, coverage aktif.
 export async function GET() {
-  const s = await getSession();
+  const s = await getSession("peta");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const [odcs, odps, customers, coverages] = await Promise.all([

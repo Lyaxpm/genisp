@@ -1,4 +1,4 @@
-import type { Sql } from "./db";
+import type { Db as Sql } from "./db";
 
 type InvoiceSalesRow = {
   id: number;

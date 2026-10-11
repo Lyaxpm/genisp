@@ -13,6 +13,7 @@ const NAV: { href: string; label: string; icon: string; menu: string; adminOnly?
   { href: "/dashboard/pelanggan", label: "Pelanggan", icon: "users", menu: "pelanggan" },
   { href: "/dashboard/tagihan", label: "Tagihan", icon: "receipt", menu: "tagihan" },
   { href: "/dashboard/paket", label: "Paket Internet", icon: "box", menu: "paket" },
+  { href: "/dashboard/genieacs", label: "GenieACS", icon: "wifi", menu: "genieacs" },
   { href: "/dashboard/router", label: "Router", icon: "router", menu: "router" },
   { href: "/dashboard/hotspot", label: "Hotspot", icon: "wifi", menu: "hotspot" },
   { href: "/dashboard/ftth", label: "FTTH", icon: "network", menu: "ftth" },
@@ -66,7 +67,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (n.superOnly && !isSuper) return false;
     if (n.adminOnly && !canManageUsers) return false;
     // RBAC granular: sembunyikan menu yang explicitly denied (kecuali superadmin)
-    if (!isSuper && permMatrix && permMatrix[role]?.[n.menu] === false) return false;
+    if (!isSuper && permMatrix?.[role]?.[n.menu] !== true) return false;
     return true;
   });
   const current = [...NAV].reverse().find((n) => isActive(pathname, n.href));

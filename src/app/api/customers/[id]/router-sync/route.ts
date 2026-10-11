@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 // Sinkron user pelanggan ke router (buat PPP secret / hotspot user bila belum ada).
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("pelanggan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   const mode = body?.mode === "hotspot" || body?.mode === "pppoe" ? body.mode : undefined;

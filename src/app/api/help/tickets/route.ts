@@ -9,7 +9,7 @@ const SELECT = `t.*, ht.name as type_name, u.name as assigned_name,
   c.name as customer_name, c.code as customer_code`;
 
 export async function GET(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("tiket");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const sp = req.nextUrl.searchParams;
   const status = sp.get("status")?.trim() ?? "";
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("tiket");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   if (!body?.subject?.trim() || !body?.message?.trim() || !body?.name?.trim())

@@ -8,7 +8,7 @@ import { ok, fail, randomCode } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("hotspot");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const sp = req.nextUrl.searchParams;
   const q = sp.get("q")?.trim() ?? "";
@@ -40,47 +40,43 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("hotspot");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   const package_id = Number(body?.package_id);
   const router_id = body?.router_id ? Number(body.router_id) : null;
-  const qty = Math.min(500, Math.max(1, Number(body?.qty) || 1));
+  const qty = Number(body?.qty ?? 1);
+  if (!Number.isInteger(qty) || qty < 1 || qty > 500) return fail("Jumlah voucher harus 1–500", 400);
   if (!package_id) return fail("package_id wajib diisi", 400);
   const db = sql();
   const pkg = await db`select id, customer_price, reseller_price from hotspot_packages where id = ${package_id}`;
   if (!pkg.length) return fail("Paket hotspot tidak ditemukan", 404);
 
-  // Debit otomatis wallet reseller bila partner_id disertakan (seperti PTA asli).
   let walletNote: string | null = null;
-  const partnerId = body?.partner_id ? Number(body.partner_id) : null;
-  if (partnerId) {
-    const unitPrice = Number(pkg[0].reseller_price ?? pkg[0].customer_price ?? 0);
-    const total = unitPrice * qty;
-    if (total > 0) {
-      try {
-        const w = await getOrCreateWallet(db, "partner", partnerId);
-        await debitWallet(db, w.id, total, "voucher_purchase", undefined, `Beli ${qty} voucher hotspot`, s.id);
-        walletNote = `Wallet reseller terdebit Rp ${total.toLocaleString("id-ID")}`;
-      } catch (e) {
-        return fail(e instanceof Error ? e.message : "Saldo wallet reseller tidak cukup", 400);
+  let created;
+  try {
+    created = await db.begin(async tx => {
+      const partnerId = body?.partner_id ? Number(body.partner_id) : null;
+      if (partnerId) {
+        const [partner] = await tx`select id from partners where id = ${partnerId} and is_active = true`;
+        if (!partner) throw new Error("Reseller tidak ditemukan atau nonaktif");
+        const total = Number(pkg[0].reseller_price ?? pkg[0].customer_price ?? 0) * qty;
+        if (total > 0) {
+          const w = await getOrCreateWallet(tx, "partner", partnerId);
+          await debitWallet(tx, w.id, total, "voucher_purchase", undefined, `Beli ${qty} voucher hotspot`, s.id);
+          walletNote = `Wallet reseller terdebit Rp ${total.toLocaleString("id-ID")}`;
+        }
       }
-    }
-  }
-
-  const created = [];
-  let guard = 0;
-  while (created.length < qty && guard < qty * 10) {
-    guard++;
-    const code = randomCode(8);
-    const dup = await db`select id from vouchers where code = ${code}`;
-    if (dup.length) continue;
-    const row = (
-      await db`insert into vouchers (code, hotspot_package_id, router_id, created_by)
-        values (${code}, ${package_id}, ${router_id}, ${s.id}) returning *`
-    )[0];
-    created.push(row);
-  }
+      const vouchers = [];
+      for (let guard = 0; vouchers.length < qty && guard < qty * 10; guard++) {
+        const rows = await tx`insert into vouchers (code, hotspot_package_id, router_id, created_by)
+          values (${randomCode(8)}, ${package_id}, ${router_id}, ${s.id}) on conflict (code) do nothing returning *`;
+        if (rows.length) vouchers.push(rows[0]);
+      }
+      if (vouchers.length !== qty) throw new Error("Gagal membuat semua voucher; saldo tidak dipotong");
+      return vouchers;
+    });
+  } catch (e) { return fail(e instanceof Error ? e.message : "Generate gagal", 400); }
   // Dorong voucher ke router sebagai hotspot user (best-effort, tidak menggagalkan generate).
   const pushed: Array<{ code: string; ok: boolean; detail: string }> = [];
   for (const v of created) {

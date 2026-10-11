@@ -64,3 +64,13 @@ src/lib/            → db, auth, utils, billing, finance, gateways, notify, rou
 supabase/migrations/→ 001_schema.sql (skema), 002_seed.sql (data awal)
 vercel.json         → jadwal cron
 ```
+
+## Pembaruan: keamanan transaksi & GenieACS
+
+- Pemeriksaan izin langsung pada API tiap modul, default izin per role, dan validasi ulang akun aktif.
+- Pelunasan invoice, debit wallet, verifikasi top-up, dan pembelian voucher menggunakan transaksi/operasi atomik.
+- Callback pembayaran menggunakan settlement terpusat dengan penguncian invoice dan payment.
+- Migrasi terurut dengan checksum dan riwayat eksekusi; Next.js diperbarui ke patch 14.2.35.
+- **GenieACS**: dashboard perangkat, pencarian/pagination, kaitan pelanggan, refresh, reboot, Wi-Fi TR-098/TR-181, antrean tugas, dan audit pengiriman.
+
+Lihat [GENIEACS.md](GENIEACS.md) untuk setup NBI dan [DEPLOY.md](DEPLOY.md) untuk upgrade. Jalankan `npm test`, `npm run typecheck`, dan `npm run build` sebelum deploy.

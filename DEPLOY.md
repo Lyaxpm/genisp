@@ -51,3 +51,13 @@ gh repo create genisp --public --source=. --push
   (atau `/midtrans`, `/tripay`) di dashboard masing-masing gateway.
 - Tanpa key gateway, checkout otomatis memberi instruksi pembayaran **manual**.
 - WhatsApp: tanpa `WHATSAPP_API_URL`, notifikasi hanya tercatat di menu Notifikasi (log).
+
+## Pembaruan transaksi, izin API, dan GenieACS
+
+1. Backup database sebelum upgrade, kemudian `git pull` dan `npm ci`.
+2. Jalankan `npm run db:migrate` dari lingkungan yang memiliki `DATABASE_URL`. Runner sekarang menggunakan transaksi, advisory lock, dan tabel `schema_migrations`; file yang sudah diterapkan tidak dijalankan ulang. Database lama tanpa tabel riwayat akan menjalankan SQL kompatibel `IF NOT EXISTS` sekali; seed paket tidak menambahkan contoh bila tabel sudah berisi data.
+3. Isi environment GenieACS sesuai [GENIEACS.md](GENIEACS.md), lalu redeploy aplikasi. Kredensial NBI tidak masuk GitHub.
+4. Verifikasi **Hak Akses**. Izin eksplisit lama tetap berlaku. Bila belum ada aturan, admin mendapat modul operasional, CS mendapat pelanggan/tagihan/konfirmasi/tiket, teknisi mendapat pelanggan/router/FTTH/peta/tiket/GenieACS, sales mendapat dashboard/pelanggan. Sistem tetap khusus superadmin. Akun nonaktif dan perubahan role kini dicek ulang pada server.
+5. `npm test`, `npm run typecheck`, dan `npm run build` tersedia untuk validasi.
+
+Pembayaran kedua untuk invoice yang sudah lunas diberi status `review` (tidak menambah pemasukan kedua). Periksa untuk rekonsiliasi/refund jika dana eksternal benar-benar masuk. Perubahan ini mencegah duplikasi baru; tidak mengubah catatan ganda lama secara otomatis. Notifikasi pembayaran dikirim setelah transaksi commit dan masih bersifat best-effort.

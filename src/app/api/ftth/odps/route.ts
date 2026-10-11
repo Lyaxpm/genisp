@@ -6,7 +6,7 @@ import { ok, fail } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("ftth");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const sp = req.nextUrl.searchParams;
   const odc_id = sp.get("odc_id");
@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("ftth");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   if (!body?.name?.trim()) return fail("Nama ODP wajib diisi", 400);

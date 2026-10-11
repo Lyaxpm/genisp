@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 const ROLES = ["superadmin", "admin", "teknisi", "cs", "sales"];
 
 export async function GET(_req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("pengguna");
   if (!s || s.role !== "superadmin") return fail("Hanya superadmin", 403);
   const db = sql();
   const items = await db`select id, name, email, role, is_active, last_login_at, created_at
@@ -18,7 +18,7 @@ export async function GET(_req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("pengguna");
   if (!s || s.role !== "superadmin") return fail("Hanya superadmin", 403);
   const body = await req.json().catch(() => null);
   const name = String(body?.name ?? "").trim();

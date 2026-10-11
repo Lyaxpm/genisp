@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 // Tendang sesi aktif user (kick): { username, type?: "pppoe" | "hotspot" }
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("router");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   const username = String(body?.username ?? "").trim();

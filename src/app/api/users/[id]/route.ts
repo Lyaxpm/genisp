@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 const ROLES = ["superadmin", "admin", "teknisi", "cs", "sales"];
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("pengguna");
   if (!s || s.role !== "superadmin") return fail("Hanya superadmin", 403);
   const body = await req.json().catch(() => null);
   if (!body) return fail("Body tidak valid", 400);
@@ -39,7 +39,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("pengguna");
   if (!s || s.role !== "superadmin") return fail("Hanya superadmin", 403);
   if (Number(params.id) === s.id) return fail("Tidak boleh menghapus akun sendiri", 400);
   const db = sql();

@@ -16,7 +16,7 @@ async function resolveCategory(db: Sql, category_id: unknown, category: unknown)
 }
 
 export async function GET(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("keuangan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const sp = req.nextUrl.searchParams;
   const from = sp.get("from")?.trim() ?? "";
@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("keuangan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   const amount = Number(body?.amount);

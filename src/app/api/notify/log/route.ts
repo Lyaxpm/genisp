@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 // GET /api/notify/log?channel=&status=&page=&limit=
 export async function GET(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("notifikasi");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const q = req.nextUrl.searchParams;
   const channel = q.get("channel") ?? "";

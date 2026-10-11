@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 // Tiket milik member yang sedang login (customer_id = session id)
 export async function GET(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("tiket");
   if (!s || s.kind !== "member") return fail("Unauthorized", 401);
   const sp = req.nextUrl.searchParams;
   const status = sp.get("status")?.trim() ?? "";
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("tiket");
   if (!s || s.kind !== "member") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   if (!body?.subject?.trim() || !body?.message?.trim())

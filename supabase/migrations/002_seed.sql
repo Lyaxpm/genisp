@@ -30,11 +30,13 @@ insert into expenditure_categories (name) values
 on conflict (name) do nothing;
 
 -- paket contoh
-insert into packages (name, category, price, speed_down, speed_up, description, is_active) values
-  ('Basic 10 Mbps', 'pppoe', 100000, '10 Mbps', '5 Mbps', 'Paket hemat untuk browsing & sosmed', true),
-  ('Standard 20 Mbps', 'pppoe', 150000, '20 Mbps', '10 Mbps', 'Paket keluarga untuk streaming HD', true),
-  ('Pro 50 Mbps', 'pppoe', 250000, '50 Mbps', '25 Mbps', 'Untuk gamer & WFH', true)
-on conflict do nothing;
+insert into packages (name, category, price, speed_down, speed_up, description, is_active)
+select v.* from (values
+ ('Basic 10 Mbps', 'pppoe', 100000, '10 Mbps', '5 Mbps', 'Paket hemat untuk browsing & sosmed', true),
+ ('Standard 20 Mbps', 'pppoe', 150000, '20 Mbps', '10 Mbps', 'Paket keluarga untuk streaming HD', true),
+ ('Pro 50 Mbps', 'pppoe', 250000, '50 Mbps', '25 Mbps', 'Untuk gamer & WFH', true)
+) as v(name, category, price, speed_down, speed_up, description, is_active)
+where not exists (select 1 from packages);
 
 -- settings default
 insert into settings (key, value) values

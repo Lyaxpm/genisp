@@ -1,6 +1,9 @@
 // Auth: JWT (jose) di httpOnly cookie + helper session.
 import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
+import { sql } from "./db";
+import { hasPermission } from "./permissions";
+import type { MenuKey } from "./menus";
 
 const COOKIE = "genisp_session";
 const MAX_AGE = 60 * 60 * 24 * 7; // 7 hari
@@ -27,12 +30,29 @@ export async function signSession(user: SessionUser): Promise<string> {
     .sign(secret());
 }
 
-export async function getSession(): Promise<SessionUser | null> {
+export async function getSession(menu?: MenuKey): Promise<SessionUser | null> {
   const token = cookies().get(COOKIE)?.value;
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, secret());
-    return payload as unknown as SessionUser;
+    if (!Number.isSafeInteger(payload.id) || !["staff", "member", "partner"].includes(String(payload.kind))) return null;
+    const session = payload as unknown as SessionUser;
+    const db = sql();
+    if (session.kind === "staff") {
+      const [user] = await db`select name, email, role from users where id = ${session.id} and is_active = true`;
+      if (!user) return null;
+      session.name = user.name;
+      session.email = user.email;
+      session.role = user.role;
+      if (menu && !(await hasPermission(session.role, menu))) return null;
+    } else if (session.kind === "member") {
+      const rows = await db`select id from customers where id = ${session.id} and status <> 'nonaktif'`;
+      if (!rows.length) return null;
+    } else {
+      const rows = await db`select id from partners where id = ${session.id} and is_active = true`;
+      if (!rows.length) return null;
+    }
+    return session;
   } catch {
     return null;
   }

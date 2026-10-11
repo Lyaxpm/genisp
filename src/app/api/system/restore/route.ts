@@ -11,7 +11,7 @@ const IDENT = /^[a-z_][a-z0-9_]*$/i;
 // POST {data: {tabel: rows[]}} — hapus isi tabel lalu insert ulang (superadmin only).
 // Hanya tabel dalam allowlist yang diproses. Berjalan dalam satu transaksi.
 export async function POST(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("sistem");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   if (s.role !== "superadmin") return fail("Khusus superadmin", 403);
   const body = await req.json().catch(() => null);

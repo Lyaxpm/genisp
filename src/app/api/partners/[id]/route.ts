@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 const UPDATABLE = ["name", "email", "phone", "commission_percent", "is_active"];
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("sales");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const rows = await db`select id, name, email, phone, commission_percent, wallet_balance, is_active, created_at
@@ -19,7 +19,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 }
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("sales");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   if (!body) return fail("Body tidak valid", 400);

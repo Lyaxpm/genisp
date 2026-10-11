@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 // Tandai komisi sudah dibayar ke sales.
 export async function POST(_req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("sales");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const rows = await db`select * from commissions where id = ${Number(params.id)}`;

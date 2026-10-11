@@ -7,7 +7,7 @@ import { ok, fail } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export async function POST(_req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("router");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const rows = await db`select * from routers where id = ${params.id}`;

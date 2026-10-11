@@ -6,7 +6,7 @@ import { ok, fail } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const s = await getSession();
+  const s = await getSession("sales");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const rows = await db`select * from sales_fees order by id asc`;
@@ -14,7 +14,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("sales");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   const name = String(body?.name ?? "").trim();

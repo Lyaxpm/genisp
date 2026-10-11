@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 // Wallet milik member yang sedang login.
 export async function GET() {
-  const s = await getSession();
+  const s = await getSession("wallet");
   if (!s || s.kind !== "member") return fail("Unauthorized", 401);
   const db = sql();
   const wallet = await getOrCreateWallet(db, "customer", s.id);

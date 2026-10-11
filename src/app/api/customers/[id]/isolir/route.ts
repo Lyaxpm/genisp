@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 // Isolir pelanggan: nonaktifkan di router (best-effort) + set status DB.
 export async function POST(_req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("pelanggan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const res = await isolirCustomer(db, Number(params.id));

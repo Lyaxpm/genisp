@@ -6,7 +6,7 @@ import { ok, fail } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 async function staff() {
-  const s = await getSession();
+  const s = await getSession("tiket");
   if (!s || s.kind !== "staff") return null;
   return s;
 }
@@ -15,7 +15,7 @@ const SELECT = `t.*, ht.name as type_name, u.name as assigned_name,
   c.name as customer_name, c.code as customer_code`;
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("tiket");
   if (!s || (s.kind !== "staff" && s.kind !== "member")) return fail("Unauthorized", 401);
   const db = sql();
   const id = Number(params.id);

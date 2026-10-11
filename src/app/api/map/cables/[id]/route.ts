@@ -6,7 +6,7 @@ import { ok, fail } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("peta");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const id = Number(params.id);
   if (!Number.isInteger(id)) return fail("ID tidak valid", 400);

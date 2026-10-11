@@ -16,7 +16,7 @@ type ImportRow = {
 
 // POST {rows: [...]} — import pelanggan massal, lewati phone yang sudah ada.
 export async function POST(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("sistem");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   const rows = (body?.rows ?? []) as ImportRow[];

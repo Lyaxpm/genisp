@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 // GET: daftar semua template pesan
 export async function GET() {
-  const s = await getSession();
+  const s = await getSession("notifikasi");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const rows = await db`select key, channel, title, body, updated_at
@@ -17,7 +17,7 @@ export async function GET() {
 
 // PUT: tambah / ubah template by key
 export async function PUT(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("notifikasi");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   const key = String(body?.key ?? "").trim();

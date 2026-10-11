@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { sql } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 import { ok, fail } from "@/lib/utils";
+import { defaultPermission } from "@/lib/permissions";
 import { MENU_KEYS, MENU_LABELS, STAFF_ROLES } from "@/lib/menus";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +16,7 @@ export async function GET() {
   const matrix: Record<string, Record<string, boolean>> = {};
   for (const r of STAFF_ROLES) {
     matrix[r] = {};
-    for (const k of MENU_KEYS) matrix[r][k] = true; // default: diizinkan
+    for (const k of MENU_KEYS) matrix[r][k] = defaultPermission(r, k);
   }
   for (const row of rows) {
     const role = String(row.role);
@@ -34,8 +35,8 @@ export async function PUT(req: NextRequest) {
   const body = await req.json().catch(() => null);
   const role = String(body?.role ?? "").trim();
   const menuKey = String(body?.menu_key ?? "").trim();
-  const allowed = Boolean(body?.allowed);
-  if (!role || !(MENU_KEYS as readonly string[]).includes(menuKey))
+  const allowed = body?.allowed;
+  if (!(STAFF_ROLES as readonly string[]).includes(role) || typeof allowed !== "boolean" || !(MENU_KEYS as readonly string[]).includes(menuKey))
     return fail("role / menu_key tidak valid", 400);
   const db = sql();
   await db`insert into role_permissions (role, menu_key, allowed)

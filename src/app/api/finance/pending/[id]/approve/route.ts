@@ -18,7 +18,7 @@ type PendingRow = {
 
 // Setujui → masuk ke incomes + status approved.
 export async function POST(_req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("keuangan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const rows = await db`select * from income_pending where id = ${Number(params.id)}`;

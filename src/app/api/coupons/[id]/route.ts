@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 const UPDATABLE = ["code", "discount_type", "discount_value", "max_use", "used_count", "valid_until", "is_active"];
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("tagihan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const rows = await db`select * from coupons where id = ${params.id}`;
@@ -17,7 +17,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 }
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("tagihan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   if (!body) return fail("Body tidak valid", 400);
@@ -45,7 +45,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("tagihan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const rows = await db`delete from coupons where id = ${params.id} returning id`;

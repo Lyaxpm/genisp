@@ -37,7 +37,7 @@ create table if not exists company (
   primary_color text not null default '#0d627c',
   secondary_color text not null default '#f97316',
   invoice_prefix text not null default 'INV',
-  check constraint (id = 1)
+  constraint company_singleton check (id = 1)
 );
 
 create table if not exists settings (

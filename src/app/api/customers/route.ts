@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 const num = (v: unknown) => (v === undefined || v === null || v === "" ? null : Number(v));
 
 export async function GET(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("pelanggan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const sp = req.nextUrl.searchParams;
   const q = sp.get("q")?.trim() ?? "";
@@ -36,11 +36,11 @@ export async function GET(req: NextRequest) {
      ${where} order by c.id desc limit $${params.length - 1} offset $${params.length}`,
     params as never[]
   );
-  return ok({ items, total: totalRows[0].total as number, page, limit });
+  return ok({ items: items.map(({ password_hash: _hash, ...customer }) => customer), total: totalRows[0].total as number, page, limit });
 }
 
 export async function POST(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("pelanggan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   const name = String(body?.name ?? "").trim();
@@ -71,5 +71,6 @@ export async function POST(req: NextRequest) {
         ${body?.notes || null}, ${s.id})
       returning *`
   )[0];
-  return ok(row, 201);
+  const { password_hash: _hash, ...customer } = row;
+  return ok(customer, 201);
 }

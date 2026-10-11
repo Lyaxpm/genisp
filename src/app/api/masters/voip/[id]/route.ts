@@ -6,7 +6,7 @@ import { ok, fail } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 async function staff() {
-  const s = await getSession();
+  const s = await getSession("master");
   if (!s || s.kind !== "staff") return null;
   return s;
 }

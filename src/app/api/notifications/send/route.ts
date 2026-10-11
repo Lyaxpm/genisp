@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 const CHANNELS = ["whatsapp", "telegram", "sms", "email"];
 
 export async function POST(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("notifikasi");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   const channel = String(body?.channel ?? "whatsapp").trim();

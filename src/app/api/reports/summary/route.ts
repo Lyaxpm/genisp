@@ -6,7 +6,7 @@ import { ok, fail } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export async function GET(_req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("laporan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
 

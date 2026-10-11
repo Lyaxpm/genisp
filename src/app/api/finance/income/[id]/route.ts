@@ -16,7 +16,7 @@ async function resolveCategory(db: Sql, name: unknown): Promise<number> {
 const UPDATABLE = ["date", "amount", "description", "payment_method"];
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("keuangan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   if (!body) return fail("Body tidak valid", 400);
@@ -50,7 +50,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("keuangan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const rows = await db`delete from incomes where id = ${params.id} returning id`;

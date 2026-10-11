@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 const VALID = ["pending", "aktif", "isolir", "nonaktif"];
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("pelanggan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   const status = String(body?.status ?? "").trim();

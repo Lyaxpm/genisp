@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 // Riwayat mutasi stok
 export async function GET(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("gudang");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const sp = req.nextUrl.searchParams;
   const itemId = sp.get("item_id")?.trim() ?? "";

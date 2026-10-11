@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 // Data live router: daftar interface + system resource.
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("router");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const rows = await db`select * from routers where id = ${params.id}`;

@@ -1,4 +1,4 @@
-import type { Sql } from "./db";
+import type { Db as Sql } from "./db";
 
 export type CouponRow = {
   id: number;
@@ -47,7 +47,12 @@ export async function consumeCoupon(
   invoiceId: number,
   customerId: number | null
 ): Promise<void> {
-  await db`insert into coupon_usages (coupon_id, invoice_id, customer_id, discount)
-    values (${coupon.id}, ${invoiceId}, ${customerId}, ${discount})`;
-  await db`update coupons set used_count = used_count + 1 where id = ${coupon.id}`;
+  const rows = await db`with consumed as (
+    update coupons set used_count = used_count + 1
+    where id = ${coupon.id} and is_active = true and used_count < max_use
+      and (valid_until is null or valid_until >= current_date)
+    returning id
+  ) insert into coupon_usages (coupon_id, invoice_id, customer_id, discount)
+    select id, ${invoiceId}, ${customerId}, ${discount} from consumed returning id`;
+  if (!rows.length) throw new Error("Kupon tidak tersedia atau kuota sudah habis");
 }

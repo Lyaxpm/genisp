@@ -26,7 +26,7 @@ function validPoints(input: unknown): CablePoint[] | null {
 }
 
 export async function GET() {
-  const s = await getSession();
+  const s = await getSession("peta");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const cables = await db`select * from map_cables order by id asc`;
@@ -34,7 +34,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("peta");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   const name = String(body?.name ?? "").trim();

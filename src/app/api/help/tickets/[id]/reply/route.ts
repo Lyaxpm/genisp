@@ -6,7 +6,7 @@ import { ok, fail } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const s = await getSession();
+  const s = await getSession("tiket");
   if (!s) return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   if (!body?.message?.trim()) return fail("Pesan balasan wajib diisi", 400);

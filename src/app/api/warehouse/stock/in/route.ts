@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 // Stok masuk manual (selain pembelian)
 export async function POST(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("gudang");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   const itemId = Number(body?.item_id);

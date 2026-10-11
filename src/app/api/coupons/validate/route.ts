@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 /** POST {code, amount} → {valid, discount, message}. Dipakai saat checkout. */
 export async function POST(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("tagihan");
   if (!s || (s.kind !== "staff" && s.kind !== "member")) return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   const code = String(body?.code ?? "");

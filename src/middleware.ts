@@ -15,9 +15,8 @@ async function readSession(req: NextRequest) {
   }
 }
 
-// Cek izin menu granular via /api/roles/check (DB). Gagal/tidak ada aturan -> izinkan.
-async function hasMenuAccess(req: NextRequest, menuKey: string, role: string): Promise<boolean> {
-  if (role === "superadmin") return true;
+// Server revalidates the active user and permissions; deny on errors.
+async function hasMenuAccess(req: NextRequest, menuKey: string): Promise<boolean> {
   try {
     const url = new URL("/api/roles/check", req.url);
     url.searchParams.set("menu_key", menuKey);
@@ -29,11 +28,11 @@ async function hasMenuAccess(req: NextRequest, menuKey: string, role: string): P
       ok?: boolean;
       data?: { allowed?: boolean; checked?: boolean };
     } | null;
-    if (!j?.ok || !j.data) return true;
-    if (!j.data.checked) return true; // tidak ada aturan eksplisit -> izinkan
-    return j.data.allowed !== false;
+    if (!res.ok || !j?.ok || !j.data) return false;
+    if (!j.data.checked) return false;
+    return j.data.allowed === true;
   } catch {
-    return true;
+    return false;
   }
 }
 
@@ -52,8 +51,8 @@ export async function middleware(req: NextRequest) {
       if (s.role !== "superadmin") return NextResponse.redirect(new URL("/dashboard", req.url));
     } else {
       const menuKey = SEGMENT_MENU[seg];
-      if (menuKey && !(await hasMenuAccess(req, menuKey, s.role ?? ""))) {
-        return NextResponse.redirect(new URL("/dashboard", req.url));
+      if (menuKey && !(await hasMenuAccess(req, menuKey))) {
+        return new NextResponse("Akses ditolak atau pemeriksaan izin tidak tersedia", { status: 403 });
       }
     }
   }

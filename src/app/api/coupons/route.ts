@@ -6,7 +6,7 @@ import { ok, fail } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export async function GET(_req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("tagihan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const db = sql();
   const items = await db`select * from coupons order by id desc`;
@@ -14,7 +14,7 @@ export async function GET(_req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const s = await getSession();
+  const s = await getSession("tagihan");
   if (!s || s.kind !== "staff") return fail("Unauthorized", 401);
   const body = await req.json().catch(() => null);
   const code = String(body?.code ?? "").trim().toUpperCase();

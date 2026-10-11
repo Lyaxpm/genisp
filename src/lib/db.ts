@@ -27,3 +27,6 @@ export function sql() {
 }
 
 export type Sql = ReturnType<typeof sql>;
+
+export type TransactionSql = postgres.TransactionSql;
+export type Db = Sql | TransactionSql;
