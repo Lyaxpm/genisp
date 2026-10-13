@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   ConfirmDialog, DataTable, ErrorBox, Field, FormError, Icon,
-  Modal, PageHeader, RowBtn,
+  Modal, PageHeader, RowBtn, Select,
 } from "@/components/admin";
 import { api, asList } from "@/lib/api";
 
@@ -45,6 +45,17 @@ const TAX_FIELDS = [
   { key: "ppn_percent", label: "PPN (%) — ditambahkan ke total tagihan saat checkout" },
 ];
 
+// Mode isolir global: disable | address-list | profile | filter-rule | binding.
+// Nilai "" = belum diatur (fallback "disable"). Simpan via body { settings: {...} }
+// karena PUT /api/settings membaca body.settings.
+const ISOLIR_MODE_OPTIONS = [
+  { value: "disable", label: "Nonaktifkan user — disable PPP secret / hotspot user + tendang sesi" },
+  { value: "address-list", label: "Address-list EXPIRED — IP pelanggan masuk daftar blokir firewall" },
+  { value: "profile", label: "Profile EXPIRED — pindah profile user ke EXPIRED (kembali otomatis saat dibuka)" },
+  { value: "filter-rule", label: "Filter rule ISOLIR — tambah rule drop per IP pelanggan" },
+  { value: "binding", label: "IP Binding regular — untuk pelanggan hotspot binding" },
+];
+
 function toMap(d: any): Record<string, string> {
   const map: Record<string, string> = {};
   for (const s of asList(d)) if (s?.key != null) map[String(s.key)] = String(s.value ?? "");
@@ -81,8 +92,25 @@ export default function PengaturanPage() {
     try {
       const values: Record<string, string> = {};
       for (const k of keys) values[k] = all[k] ?? "";
-      await api("/api/settings", { method: "PUT", body: JSON.stringify({ values }) });
+      // BUGFIX 2026-10-13 (S13): route PUT /api/settings membaca body.settings,
+      // bukan body.values — kirim dengan nama yang benar agar tombol Simpan
+      // benar-benar menyimpan.
+      await api("/api/settings", { method: "PUT", body: JSON.stringify({ settings: values }) });
       setSavedAt(`${label} tersimpan • ${new Date().toLocaleTimeString("id-ID")}`);
+      setTimeout(() => setSavedAt(null), 3000);
+    } catch (e: any) {
+      alert(e.message);
+    } finally { setSaving(null); }
+  }
+
+  async function saveIsolirMode() {
+    setSaving("Mode isolir");
+    try {
+      await api("/api/settings", {
+        method: "PUT",
+        body: JSON.stringify({ settings: { isolir_mode: all.isolir_mode || "disable" } }),
+      });
+      setSavedAt(`Mode isolir tersimpan • ${new Date().toLocaleTimeString("id-ID")}`);
       setTimeout(() => setSavedAt(null), 3000);
     } catch (e: any) {
       alert(e.message);
@@ -93,7 +121,8 @@ export default function PengaturanPage() {
     const key = kvForm.key.trim();
     if (!key) { setKvErr("Key wajib diisi."); return; }
     try {
-      await api("/api/settings", { method: "PUT", body: JSON.stringify({ values: { [key]: kvForm.value } }) });
+      // BUGFIX 2026-10-13 (S13): kirim { settings } bukan { values } — lihat saveGroup.
+      await api("/api/settings", { method: "PUT", body: JSON.stringify({ settings: { [key]: kvForm.value } }) });
       setKvModal(false); setKvForm({ key: "", value: "" });
       load();
     } catch (e: any) { setKvErr(e.message); }
@@ -107,7 +136,7 @@ export default function PengaturanPage() {
     } catch (e: any) { alert(e.message); }
   }
 
-  const knownKeys = new Set([...COMPANY_FIELDS, ...GATEWAY_FIELDS, ...GATEWAY_FIELDS_2, ...TAX_FIELDS].map((f) => f.key));
+  const knownKeys = new Set([...COMPANY_FIELDS, ...GATEWAY_FIELDS, ...GATEWAY_FIELDS_2, ...TAX_FIELDS, "isolir_mode"].map((f: any) => typeof f === "string" ? f : f.key));
   const customRows: { key: string; value: string }[] = Object.entries(all)
     .filter(([k]) => !knownKeys.has(k))
     .map(([key, value]) => ({ key, value }));
@@ -234,6 +263,37 @@ export default function PengaturanPage() {
                     placeholder="11" />
                 </Field>
               ))}
+            </div>
+          </section>
+
+          {/* Mode isolir global */}
+          <section className="card">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <h2 className="text-base font-bold text-slate-900">Mode Isolir</h2>
+                <p className="text-xs text-slate-400">
+                  Cara default memutus akses internet pelanggan saat isolir — bisa di-override per pelanggan di halaman Pelanggan
+                </p>
+              </div>
+              <button type="button" className="btn-primary !py-2 text-sm"
+                disabled={saving === "Mode isolir"}
+                onClick={saveIsolirMode}>
+                {saving === "Mode isolir" ? "Menyimpan..." : "Simpan"}
+              </button>
+            </div>
+            <div className="grid grid-cols-1 gap-4">
+              <Field label="Mode isolir global">
+                <Select value={all.isolir_mode || "disable"}
+                  onChange={(e) => set("isolir_mode", e.target.value)}>
+                  {ISOLIR_MODE_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
+                </Select>
+              </Field>
+              <p className="text-xs text-slate-400">
+                Mode address-list & filter-rule membutuhkan IP pelanggan yang diketahui router
+                (remote-address / sesi aktif). Mode binding membutuhkan MAC address pelanggan.
+              </p>
             </div>
           </section>
 

@@ -11,7 +11,16 @@ import { rupiah, todayID } from "@/lib/utils";
 const EMPTY_FORM = {
   name: "", phone: "", email: "", address: "",
   package_id: "", router_id: "", pppoe_username: "", pppoe_password: "",
-  connection_type: "PPPoE", due_day: "1", status: "aktif",
+  connection_type: "PPPoE", due_day: "1", status: "aktif", isolir_mode: "",
+};
+
+const ISOLIR_MODE_LABEL: Record<string, string> = {
+  "": "Ikut pengaturan global",
+  disable: "Nonaktifkan user",
+  "address-list": "Address-list EXPIRED",
+  profile: "Profile EXPIRED",
+  "filter-rule": "Filter rule ISOLIR",
+  binding: "IP Binding regular",
 };
 
 export default function PelangganPage() {
@@ -69,7 +78,7 @@ export default function PelangganPage() {
       package_id: c.package_id ?? "", router_id: c.router_id ?? "",
       pppoe_username: c.pppoe_username ?? "", pppoe_password: c.pppoe_password ?? "",
       connection_type: c.connection_type ?? "PPPoE", due_day: String(c.due_day ?? "1"),
-      status: c.status ?? "aktif",
+      status: c.status ?? "aktif", isolir_mode: c.isolir_mode ?? "",
     });
     setFormError(null);
     setEditingId(c.id);
@@ -189,6 +198,13 @@ export default function PelangganPage() {
             <option>PPPoE</option><option>Hotspot</option><option>FTTH</option><option>Dedicated</option>
           </Select>
         </Field>
+        <Field label="Mode Isolir (override)">
+          <Select value={form.isolir_mode} onChange={(e) => set("isolir_mode", e.target.value)}>
+            {Object.entries(ISOLIR_MODE_LABEL).map(([v, l]) => (
+              <option key={v} value={v}>{l}</option>
+            ))}
+          </Select>
+        </Field>
         <Field label="Tanggal Jatuh Tempo">
           <input className="input" type="number" min={1} max={31} value={form.due_day} onChange={(e) => set("due_day", e.target.value)} />
         </Field>
@@ -295,6 +311,7 @@ export default function PelangganPage() {
                 ["Paket", detail.package_name ?? pkgName(detail.package_id)],
                 ["Tipe Koneksi", detail.connection_type ?? "-"],
                 ["Username PPPoE", detail.pppoe_username ?? "-"],
+                ["Mode Isolir", ISOLIR_MODE_LABEL[detail.isolir_mode ?? ""] ?? detail.isolir_mode],
                 ["Jatuh Tempo", `Tanggal ${detail.due_day ?? "-"}`],
                 ["Alamat", detail.address ?? "-"],
                 ["Terdaftar", detail.created_at ? todayID(detail.created_at) : "-"],

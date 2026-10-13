@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { sql } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 import { pushVoucherToRouter } from "@/lib/mikrotik-actions";
-import { getOrCreateWallet, debitWallet } from "@/lib/wallet";
+import { getOrCreateWallet, debitWallet, creditWallet } from "@/lib/wallet";
 import { ok, fail, randomCode } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -53,6 +53,8 @@ export async function POST(req: NextRequest) {
   if (!pkg.length) return fail("Paket hotspot tidak ditemukan", 404);
 
   let walletNote: string | null = null;
+  let walletId: number | null = null;
+  let paidUnitPrice = 0;
   let created;
   try {
     created = await db.begin(async tx => {
@@ -60,9 +62,12 @@ export async function POST(req: NextRequest) {
       if (partnerId) {
         const [partner] = await tx`select id from partners where id = ${partnerId} and is_active = true`;
         if (!partner) throw new Error("Reseller tidak ditemukan atau nonaktif");
-        const total = Number(pkg[0].reseller_price ?? pkg[0].customer_price ?? 0) * qty;
+        const unitPrice = Number(pkg[0].reseller_price ?? pkg[0].customer_price ?? 0);
+        const total = unitPrice * qty;
         if (total > 0) {
           const w = await getOrCreateWallet(tx, "partner", partnerId);
+          walletId = w.id;
+          paidUnitPrice = unitPrice;
           await debitWallet(tx, w.id, total, "voucher_purchase", undefined, `Beli ${qty} voucher hotspot`, s.id);
           walletNote = `Wallet reseller terdebit Rp ${total.toLocaleString("id-ID")}`;
         }
@@ -94,5 +99,23 @@ export async function POST(req: NextRequest) {
       pushed.push({ code: vcode, ok: false, detail: e instanceof Error ? e.message : "gagal" });
     }
   }
-  return ok({ generated: created.length, vouchers: created, pushed, wallet: walletNote }, 201);
+  // Refund otomatis via ledger bila wallet reseller terdebit tapi push ke MikroTik gagal.
+  let refunded = 0;
+  if (walletId && paidUnitPrice > 0) {
+    const failedCount = pushed.filter((p) => !p.ok).length;
+    if (failedCount > 0) {
+      try {
+        const refundAmount = Math.round(paidUnitPrice * failedCount * 100) / 100;
+        await creditWallet(db, walletId, refundAmount, "voucher_refund", undefined,
+          `Refund otomatis: ${failedCount} voucher hotspot gagal didorong ke MikroTik`, s.id);
+        refunded = refundAmount;
+      } catch (e) {
+        return ok({
+          generated: created.length, vouchers: created, pushed, wallet: walletNote, refunded: 0,
+          refund_error: e instanceof Error ? e.message : "refund gagal — refund manual diperlukan",
+        }, 201);
+      }
+    }
+  }
+  return ok({ generated: created.length, vouchers: created, pushed, wallet: walletNote, refunded }, 201);
 }

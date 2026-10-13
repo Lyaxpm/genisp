@@ -1,0 +1,49 @@
+// Settings bot Telegram (staff). Token bot WAJIB via env TELEGRAM_BOT_TOKEN —
+// tidak pernah disimpan di DB dan tidak pernah dikembalikan API.
+import { NextRequest } from "next/server";
+import { sql } from "@/lib/db";
+import { ok, fail } from "@/lib/utils";
+import {
+  staff, readSettings, writeSettings, assertNoSecrets, toBool,
+} from "../_lib";
+
+export const dynamic = "force-dynamic";
+
+const KEYS = [
+  "telegram_enabled",
+  "telegram_bot_username",
+  "telegram_owner_username",
+  "telegram_owner_chat_id",
+  "telegram_technician_group_id",
+  "telegram_parse_mode",
+];
+
+const BOOLEANS = new Set(["telegram_enabled"]);
+
+export async function GET() {
+  if (!(await staff())) return fail("Unauthorized", 401);
+  const db = sql();
+  const cfg = await readSettings(db, KEYS);
+  return ok({
+    ...cfg,
+    // Token tidak pernah dikembalikan — hanya status keterisian dari env.
+    token_set: !!process.env.TELEGRAM_BOT_TOKEN,
+  });
+}
+
+export async function PUT(req: NextRequest) {
+  if (!(await staff())) return fail("Unauthorized", 401);
+  const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
+  if (!body) return fail("Body tidak valid", 400);
+  const bad = assertNoSecrets(body, "Settings Telegram");
+  if (bad) return bad;
+  const db = sql();
+  const pairs: Record<string, string> = {};
+  for (const k of KEYS) {
+    if (body[k] !== undefined)
+      pairs[k] = BOOLEANS.has(k) ? toBool(body[k]) : String(body[k] ?? "");
+  }
+  if (!Object.keys(pairs).length) return fail("Tidak ada config untuk disimpan", 400);
+  await writeSettings(db, pairs);
+  return ok({ saved: true, token_set: !!process.env.TELEGRAM_BOT_TOKEN });
+}

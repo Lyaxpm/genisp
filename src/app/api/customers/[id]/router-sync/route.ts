@@ -16,5 +16,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   const res = await routerSyncCustomer(db, Number(params.id), mode);
   if (!res.ok && res.router === "skipped") return fail(res.detail, 400);
   if (!res.ok) return fail(res.detail, 502);
+  // Tandai pelanggan sudah tersinkron (dipakai GET /api/customers/unsync)
+  await db`update customers set router_synced_at = now(), updated_at = now() where id = ${params.id}`;
   return ok(res);
 }

@@ -223,3 +223,29 @@ Landing: hero slider, daftar paket, **cek tagihan interaktif**, section hotspot,
 8. Multi-tenancy mitra: `package_mitra=1` (paket), `coverage_mitra`, `customer_mitra`, tabel `mitra-external` (pakai tanda hubung).
 9. Semua timestamp operasional memakai `company.timezone`; banyak kolom tanggal berupa **unix timestamp INT**, bukan DATETIME.
 10. Lisensi: beberapa fitur (mis. `scheduleWhatsapp`) diblokir bila status lisensi ≠ `match` — untuk rebuild, abaikan/hapus mekanisme lisensi.
+
+---
+
+## 8. Batch "tanpa perangkat" — penutup gap vs PTA (2026-10-13, GenISP v2.x)
+
+Implementasi baru hasil batch gap-closure (tidak butuh hardware untuk dibangun; bagian RouterOS/SMTP/bot butuh perangkat & kredensial milik operator untuk verifikasi live). Migrasi: `supabase/migrations/005_isolir.sql` s.d. `014_settings.sql`.
+
+| Stream | Yang ditambahkan | Route/tabel/file baru |
+|---|---|---|
+| S1 Isolir 5-mode | Mode isolir disable / address-list EXPIRED / profile EXPIRED / filter-rule / binding (× isolir & buka), setting global + override per pelanggan | `src/lib/isolir-modes.ts`, `005_isolir.sql` (`customers.isolir_mode`, `customers.isolir_prev_profile`), UI di Pengaturan & form pelanggan |
+| S2 Job queue | Tabel `cronjobs` + `backups`; `enqueue/claimNext` (atomik SKIP LOCKED)/retry backoff; worker `/api/queue/run` (CRON_SECRET); job: hotspot_auto_clean, birthday_wa, db_backup, router_olt_check, maintenance (delldoublebill, fixduedate) | `src/lib/queue.ts`, `src/lib/queue-jobs.ts`, `006_queue.sql`, cron vercel.json tiap 5 mnt |
+| S3 Installer | Wizard 5 langkah: cek sistem → migrasi → admin pertama → company → verifikasi; guard redirect bila admin ada; tanpa license key | `src/app/install/page.tsx`, `/api/install/*` |
+| S4 Theme+i18n | Dark/light (class strategy, anti-FOUC) + toggle; dictionary id/en + LanguageSwitcher; sidebar & topbar diterjemahkan | `src/i18n/*`, `src/components/ThemeToggle.tsx`, `LanguageSwitcher.tsx` |
+| S5 OpenAPI | Scanner `route.ts` → OpenAPI 3.0.3 JSON + halaman Swagger UI (`/docs`); regenerate via `node scripts/generate-openapi-routes.js` | `src/lib/openapi.ts`, `src/lib/openapi-routes.json`, `/api/docs/openapi.json`, `/docs` |
+| S6 Billing | Draft invoice → finalize; kode unik pembayaran (amount+kode−diskon); bulk discount; modul debt/piutang; cetak thermal 58mm + template struk kustom; import CSV; rekonsiliasi; profit sharing | `007_billing.sql`, `/api/invoices/drafts/*`, `/api/debts/*`, `/api/receipt-templates/*`, `/api/reports/reconciliation`, `/api/reports/profit-sharing` |
+| S7 Customer | Recycle bin (soft delete + restore + purge); dokumen pelanggan (upload lokal `UPLOADS_DIR`); deteksi duplikat (4 aturan); deteksi belum-tersinkronisasi | `008_customer.sql`, `/api/customers/recycle`, `/restore`, `/purge`, `/documents/*`, `/duplicates`, `/unsync` |
+| S8 Hotspot | Template editor + cetak; lokasi hotspot; konfigurasi scheduler + eksekutor; reseller topup request → approval; beli voucher potong wallet + refund otomatis bila gagal | `009_hotspot.sql`, `/api/hotspot/templates/*`, `/locations/*`, `/scheduler-config`, `/scheduler/run`, `/reseller/*` |
+| S9 Notifikasi | Webhook Telegram bot (/start /whoami /tagihan /help); FCM tokens + templates + send; antrean notifikasi berprioritas + worker; adapter Telecore (error jelas bila belum dikonfigurasi) | `010_notify.sql`, `src/lib/telegram.ts`, `src/lib/telecore.ts`, `/api/webhooks/telegram`, `/api/notify/fcm/*`, `/api/notify/queue/*`, `/api/notify/telecore/send` |
+| S10 Portal | Self-reset koneksi; cek usage; info + reboot modem (hanya CPE `is_cpe`); beli voucher via wallet; testimoni | `013_portal.sql` (testimonials, `routers.is_cpe`), `/api/portal/self-reset`, `/usage`, `/modem`, `/voucher-buy`, `/testimonials`, `/api/public/testimonials` |
+| S11 Dashboard | Tab badges; global quick search; pending-income widget; KPI hit counter; kerangka live (status DB nyata, degradasi jujur) | `012_dashboard.sql`, `/api/dashboard/badges`, `/quick-search`, `/pending-income`, `/kpi`, `/live` |
+| S12 Livechat | Percakapan + pesan; widget publik API; admin balas/tutup; realtime SSE (pengganti socket.io; batasan multi-instance didokumentasikan) | `011_livechat.sql`, `src/lib/livechat.ts`, `/api/livechat/*`, `/api/realtime/events`, `src/components/LiveChatWidget.tsx` |
+| S13 Master & settings | Master payment-method/status-customer/device-brand/connection-media/bank; settings email SMTP & Telegram (secret via env); terms/policy; UI integrasi (secret di-mask); **perbaikan bug**: halaman Pengaturan mengirim `{values}` padahal route membaca `body.settings` | `014_settings.sql`, `/api/masters/*`, `/api/settings/email`, `/telegram`, `/terms`, `/api/integrations` |
+
+**Env var baru (lihat `.env.example`):** `UPLOADS_DIR`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET`, `TELECORE_BASE_URL`, `TELECORE_API_KEY`, `SMTP_PASS`, `XENDIT_WEBHOOK_TOKEN`, `DUITKU_API_KEY`, `DOKU_SECRET_KEY`, `IPAYMU_API_KEY`, `BNI_CALLBACK_TOKEN`, `MOOTA_SECRET_KEY`, `FLIP_SECRET_KEY`, `MAPS_TOKEN`, `GENIEACS_PASSWORD`.
+
+**Belum dikerjakan (butuh perangkat/kredensial operator):** GenieACS/TR-069, adapter OLT per vendor, AI integration, BNI e-Collection penuh (BniEnc), mobile API admin penuh, modul Toko (Midi), Manager.io. **Deferred tercatat.**

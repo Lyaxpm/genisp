@@ -1,0 +1,2118 @@
+{
+  "generatedAt": "2026-10-13T03:13:06.420Z",
+  "generator": "scripts/generate-openapi-routes.js (STREAM S5)",
+  "count": 228,
+  "routes": [
+    {
+      "path": "/api/activity-logs",
+      "group": "activity-logs",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/auth/login",
+      "group": "auth",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/auth/logout",
+      "group": "auth",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/auth/me",
+      "group": "auth",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/commissions/{id}/pay",
+      "group": "commissions",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/commissions",
+      "group": "commissions",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/confirm-payments/{id}/review",
+      "group": "confirm-payments",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/confirm-payments",
+      "group": "confirm-payments",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/coupons/{id}",
+      "group": "coupons",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/coupons",
+      "group": "coupons",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/coupons/validate",
+      "group": "coupons",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/coverages/{id}",
+      "group": "coverages",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/coverages",
+      "group": "coverages",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/cron/auto-isolir",
+      "group": "cron",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/cron/generate-invoices",
+      "group": "cron",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/cron/reminders",
+      "group": "cron",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/customers/{id}/documents/{docId}/file",
+      "group": "customers",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": [
+        "id",
+        "docId"
+      ]
+    },
+    {
+      "path": "/api/customers/{id}/documents/{docId}",
+      "group": "customers",
+      "methods": [
+        "DELETE",
+        "PUT",
+        "GET"
+      ],
+      "pathParams": [
+        "id",
+        "docId"
+      ]
+    },
+    {
+      "path": "/api/customers/{id}/documents",
+      "group": "customers",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/customers/{id}/isolir",
+      "group": "customers",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/customers/{id}/open",
+      "group": "customers",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/customers/{id}/purge",
+      "group": "customers",
+      "methods": [
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/customers/{id}/restore",
+      "group": "customers",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/customers/{id}",
+      "group": "customers",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/customers/{id}/router-sync",
+      "group": "customers",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/customers/{id}/status",
+      "group": "customers",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/customers/duplicates",
+      "group": "customers",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/customers/recycle",
+      "group": "customers",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/customers",
+      "group": "customers",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/customers/unsync",
+      "group": "customers",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/dashboard/badges",
+      "group": "dashboard",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/dashboard/kpi",
+      "group": "dashboard",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/dashboard/live",
+      "group": "dashboard",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/dashboard/pending-income",
+      "group": "dashboard",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/dashboard/quick-search",
+      "group": "dashboard",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/debts/{id}/pay",
+      "group": "debts",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/debts/{id}",
+      "group": "debts",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/debts",
+      "group": "debts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/docs/openapi.json",
+      "group": "docs",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/finance/expenditure/{id}",
+      "group": "finance",
+      "methods": [
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/finance/expenditure",
+      "group": "finance",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/finance/income/{id}",
+      "group": "finance",
+      "methods": [
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/finance/income",
+      "group": "finance",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/finance/pending/{id}/approve",
+      "group": "finance",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/finance/pending/{id}/reject",
+      "group": "finance",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/finance/pending",
+      "group": "finance",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/finance/summary",
+      "group": "finance",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/ftth/odcs/{id}",
+      "group": "ftth",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/ftth/odcs",
+      "group": "ftth",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/ftth/odps/{id}",
+      "group": "ftth",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/ftth/odps",
+      "group": "ftth",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/ftth/olts/{id}",
+      "group": "ftth",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/ftth/olts",
+      "group": "ftth",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/help/mine",
+      "group": "help",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/help/tickets/{id}/reply",
+      "group": "help",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/help/tickets/{id}",
+      "group": "help",
+      "methods": [
+        "GET",
+        "PUT"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/help/tickets",
+      "group": "help",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/help/types/{id}",
+      "group": "help",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/help/types",
+      "group": "help",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/hotspot/locations/{id}",
+      "group": "hotspot",
+      "methods": [
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/hotspot/locations",
+      "group": "hotspot",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/hotspot/packages/{id}",
+      "group": "hotspot",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/hotspot/packages",
+      "group": "hotspot",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/hotspot/reseller/purchase",
+      "group": "hotspot",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/hotspot/reseller/topup-approve",
+      "group": "hotspot",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/hotspot/reseller/topup-request",
+      "group": "hotspot",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/hotspot/reseller/wallet",
+      "group": "hotspot",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/hotspot/scheduler-config",
+      "group": "hotspot",
+      "methods": [
+        "GET",
+        "PUT"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/hotspot/scheduler/run",
+      "group": "hotspot",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/hotspot/templates/{id}/print",
+      "group": "hotspot",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/hotspot/templates/{id}",
+      "group": "hotspot",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/hotspot/templates",
+      "group": "hotspot",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/hotspot/vouchers",
+      "group": "hotspot",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/install/admin",
+      "group": "install",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/install/check",
+      "group": "install",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/install/company",
+      "group": "install",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/install/migrate",
+      "group": "install",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/install/status",
+      "group": "install",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/integrations/{key}",
+      "group": "integrations",
+      "methods": [
+        "PUT"
+      ],
+      "pathParams": [
+        "key"
+      ]
+    },
+    {
+      "path": "/api/integrations",
+      "group": "integrations",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/invoices/{id}/pay",
+      "group": "invoices",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/invoices/{id}/print-thermal",
+      "group": "invoices",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/invoices/{id}",
+      "group": "invoices",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/invoices/{id}/unique-code",
+      "group": "invoices",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/invoices/bulk-discount",
+      "group": "invoices",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/invoices/drafts/{id}/finalize",
+      "group": "invoices",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/invoices/drafts/{id}",
+      "group": "invoices",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/invoices/drafts",
+      "group": "invoices",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/invoices/generate",
+      "group": "invoices",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/invoices/import",
+      "group": "invoices",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/invoices",
+      "group": "invoices",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/livechat/conversations/{id}/close",
+      "group": "livechat",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/livechat/conversations/{id}/messages",
+      "group": "livechat",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/livechat/conversations/{id}/reply",
+      "group": "livechat",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/livechat/conversations/{id}",
+      "group": "livechat",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/livechat/conversations",
+      "group": "livechat",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/map/cables/{id}",
+      "group": "map",
+      "methods": [
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/map/cables",
+      "group": "map",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/map/data",
+      "group": "map",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/masters/banks/{id}",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/masters/banks",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/masters/connection-media/{id}",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/masters/connection-media",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/masters/customer-statuses/{id}",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/masters/customer-statuses",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/masters/device-brands/{id}",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/masters/device-brands",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/masters/gsm/{id}",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/masters/gsm",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/masters/modems/{id}",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/masters/modems",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/masters/onu/{id}",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/masters/onu",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/masters/payment-methods/{id}",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/masters/payment-methods",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/masters/voip/{id}",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/masters/voip",
+      "group": "masters",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/notifications",
+      "group": "notifications",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/notifications/send",
+      "group": "notifications",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/notify/fcm/send",
+      "group": "notify",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/notify/fcm/templates",
+      "group": "notify",
+      "methods": [
+        "GET",
+        "POST",
+        "DELETE"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/notify/fcm/tokens",
+      "group": "notify",
+      "methods": [
+        "GET",
+        "POST",
+        "DELETE"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/notify/log",
+      "group": "notify",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/notify/queue/enqueue",
+      "group": "notify",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/notify/queue",
+      "group": "notify",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/notify/queue/run",
+      "group": "notify",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/notify/telecore/send",
+      "group": "notify",
+      "methods": [
+        "POST",
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/notify/telegram/send",
+      "group": "notify",
+      "methods": [
+        "POST",
+        "PUT"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/notify/templates",
+      "group": "notify",
+      "methods": [
+        "GET",
+        "PUT"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/notify/test",
+      "group": "notify",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/packages/{id}",
+      "group": "packages",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/packages",
+      "group": "packages",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/partner/customers",
+      "group": "partner",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/partner/me",
+      "group": "partner",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/partner/wallet",
+      "group": "partner",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/partners/{id}",
+      "group": "partners",
+      "methods": [
+        "GET",
+        "PUT"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/partners/{id}/wallet",
+      "group": "partners",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/partners",
+      "group": "partners",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/payments/checkout",
+      "group": "payments",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/payments/webhook/bni",
+      "group": "payments",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/payments/webhook/doku",
+      "group": "payments",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/payments/webhook/duitku",
+      "group": "payments",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/payments/webhook/indosat",
+      "group": "payments",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/payments/webhook/ipaymu",
+      "group": "payments",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/payments/webhook/midtrans",
+      "group": "payments",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/payments/webhook/moota",
+      "group": "payments",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/payments/webhook/tripay",
+      "group": "payments",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/payments/webhook/tukeur",
+      "group": "payments",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/payments/webhook/xendit",
+      "group": "payments",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/portal/invoices",
+      "group": "portal",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/portal/me",
+      "group": "portal",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/portal/modem/reboot",
+      "group": "portal",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/portal/modem",
+      "group": "portal",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/portal/profile",
+      "group": "portal",
+      "methods": [
+        "PUT"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/portal/reset",
+      "group": "portal",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/portal/self-reset",
+      "group": "portal",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/portal/testimonials",
+      "group": "portal",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/portal/usage",
+      "group": "portal",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/portal/voucher-buy",
+      "group": "portal",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/products/{id}",
+      "group": "products",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/products",
+      "group": "products",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/promos/{id}",
+      "group": "promos",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/promos",
+      "group": "promos",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/public/check-bill",
+      "group": "public",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/public/confirm",
+      "group": "public",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/public/help-types",
+      "group": "public",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/public/register",
+      "group": "public",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/public/site",
+      "group": "public",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/public/terms",
+      "group": "public",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/public/testimonials",
+      "group": "public",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/public/tickets",
+      "group": "public",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/public/tickets/track",
+      "group": "public",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/public/voucher-buy",
+      "group": "public",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/public/voucher-packages",
+      "group": "public",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/queue/backups",
+      "group": "queue",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/queue/enqueue",
+      "group": "queue",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/queue/jobs",
+      "group": "queue",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/queue/run",
+      "group": "queue",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/realtime/events",
+      "group": "realtime",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/receipt-templates/{id}",
+      "group": "receipt-templates",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/receipt-templates",
+      "group": "receipt-templates",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/reports/profit-sharing",
+      "group": "reports",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/reports/reconciliation",
+      "group": "reports",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/reports/summary",
+      "group": "reports",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/roles/check",
+      "group": "roles",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/roles/permissions",
+      "group": "roles",
+      "methods": [
+        "GET",
+        "PUT"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/routers/{id}/kick",
+      "group": "routers",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/routers/{id}/live",
+      "group": "routers",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/routers/{id}",
+      "group": "routers",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/routers/{id}/test",
+      "group": "routers",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/routers",
+      "group": "routers",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/sales/fees/{id}",
+      "group": "sales",
+      "methods": [
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/sales/fees",
+      "group": "sales",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/services/{id}",
+      "group": "services",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/services",
+      "group": "services",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/settings/{key}",
+      "group": "settings",
+      "methods": [
+        "DELETE"
+      ],
+      "pathParams": [
+        "key"
+      ]
+    },
+    {
+      "path": "/api/settings/email",
+      "group": "settings",
+      "methods": [
+        "GET",
+        "PUT"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/settings/email/test",
+      "group": "settings",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/settings",
+      "group": "settings",
+      "methods": [
+        "GET",
+        "PUT"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/settings/telegram",
+      "group": "settings",
+      "methods": [
+        "GET",
+        "PUT"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/settings/terms",
+      "group": "settings",
+      "methods": [
+        "GET",
+        "PUT"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/slides/{id}",
+      "group": "slides",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/slides",
+      "group": "slides",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/system/backup",
+      "group": "system",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/system/import-customers",
+      "group": "system",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/system/restore",
+      "group": "system",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/users/{id}",
+      "group": "users",
+      "methods": [
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/users",
+      "group": "users",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/wallet/me",
+      "group": "wallet",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/wallet/topup/{id}/settle",
+      "group": "wallet",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/wallet/topup",
+      "group": "wallet",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/wallets/{id}/adjust",
+      "group": "wallets",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/wallets/{id}",
+      "group": "wallets",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/wallets",
+      "group": "wallets",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/warehouse/item-types/{id}",
+      "group": "warehouse",
+      "methods": [
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/warehouse/item-types",
+      "group": "warehouse",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/warehouse/items/{id}",
+      "group": "warehouse",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/warehouse/items",
+      "group": "warehouse",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/warehouse/purchases/{id}",
+      "group": "warehouse",
+      "methods": [
+        "GET",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/warehouse/purchases",
+      "group": "warehouse",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/warehouse/stock/in",
+      "group": "warehouse",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/warehouse/stock/out",
+      "group": "warehouse",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/warehouse/stock",
+      "group": "warehouse",
+      "methods": [
+        "GET"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/warehouse/suppliers/{id}",
+      "group": "warehouse",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/warehouse/suppliers",
+      "group": "warehouse",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/warehouse/vendors/{id}",
+      "group": "warehouse",
+      "methods": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "pathParams": [
+        "id"
+      ]
+    },
+    {
+      "path": "/api/warehouse/vendors",
+      "group": "warehouse",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "pathParams": []
+    },
+    {
+      "path": "/api/webhooks/telegram",
+      "group": "webhooks",
+      "methods": [
+        "POST"
+      ],
+      "pathParams": []
+    }
+  ]
+}

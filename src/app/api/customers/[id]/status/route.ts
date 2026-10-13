@@ -15,7 +15,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   if (!VALID.includes(status)) return fail("Status tidak valid (pending|aktif|isolir|nonaktif)", 400);
   const db = sql();
   const rows = await db`update customers set status = ${status}, updated_at = now()
-    where id = ${params.id} returning id, code, name, status`;
+    where id = ${params.id} and deleted_at is null returning id, code, name, status`;
   if (!rows.length) return fail("Pelanggan tidak ditemukan", 404);
   return ok(rows[0]);
 }

@@ -6,14 +6,17 @@ import {
   findId,
   pppSecretAdd,
   pppSecretSet,
-  pppSecretDisable,
-  pppSecretEnable,
-  pppActiveRemove,
   hotspotUserAdd,
-  hotspotUserDisable,
   hotspotUserEnable,
-  hotspotActiveRemove,
 } from "./routeros";
+import {
+  isolateCustomer as isolateByMode,
+  openCustomer as openByMode,
+  pickIsolirMode,
+  getGlobalIsolirMode,
+  type IsolirMode,
+  type IsolirCustomer,
+} from "./isolir-modes";
 import { randomCode } from "./utils";
 
 export type ActionResult = {
@@ -49,28 +52,25 @@ function loginName(c: CustomerFull): string {
   return (c.pppoe_user as string) || (c.code as string);
 }
 
-/** Isolir pelanggan: nonaktifkan user di router + tendang sesi + set status DB. */
-export async function isolirCustomer(db: Sql, customerId: number): Promise<ActionResult> {
+/** Isolir pelanggan: jalankan aksi mode isolir di router (best-effort) + set status DB.
+ *  Mode: parameter > override pelanggan (customers.isolir_mode) > global (settings.isolir_mode) > "disable". */
+export async function isolirCustomer(
+  db: Sql,
+  customerId: number,
+  mode?: IsolirMode
+): Promise<ActionResult> {
   const c = await getCustomerFull(db, customerId);
   if (!c) return { ok: false, detail: "Pelanggan tidak ditemukan", router: "skipped" };
-  const name = loginName(c);
+  const m = mode ?? pickIsolirMode(c.isolir_mode, await getGlobalIsolirMode(db));
   let router: ActionResult["router"] = "skipped";
   let rosNote = "tidak ada router terpasang";
   if (c.router_id && c.r_host) {
     try {
-      const conn = await connectRouter(routerCreds(c));
-      try {
-        if (c.connection_type === "hotspot") {
-          await hotspotUserDisable(conn, name);
-          await hotspotActiveRemove(conn, name);
-        } else {
-          await pppSecretDisable(conn, name);
-          await pppActiveRemove(conn, name);
-        }
-        router = "ok";
-        rosNote = `user "${name}" dinonaktifkan di router`;
-      } finally {
-        conn.close();
+      const res = await isolateByMode(routerCreds(c), c as unknown as IsolirCustomer, m);
+      router = "ok";
+      rosNote = res.detail;
+      if (m === "profile" && res.prevProfile !== undefined) {
+        await db`update customers set isolir_prev_profile = ${res.prevProfile}, updated_at = now() where id = ${customerId}`;
       }
     } catch (e) {
       router = "failed";
@@ -78,37 +78,33 @@ export async function isolirCustomer(db: Sql, customerId: number): Promise<Actio
     }
   }
   await db`update customers set status = 'isolir', updated_at = now() where id = ${customerId}`;
-  return { ok: true, detail: `Pelanggan diisolir. ${rosNote}.`, router };
+  return { ok: true, detail: `Pelanggan diisolir (mode ${m}). ${rosNote}.`, router };
 }
 
-/** Buka isolir pelanggan: aktifkan kembali user di router + set status DB. */
-export async function openCustomer(db: Sql, customerId: number): Promise<ActionResult> {
+/** Buka isolir pelanggan: jalankan aksi buka mode isolir di router (best-effort) + set status DB.
+ *  Mode: parameter > override pelanggan (customers.isolir_mode) > global (settings.isolir_mode) > "disable". */
+export async function openCustomer(
+  db: Sql,
+  customerId: number,
+  mode?: IsolirMode
+): Promise<ActionResult> {
   const c = await getCustomerFull(db, customerId);
   if (!c) return { ok: false, detail: "Pelanggan tidak ditemukan", router: "skipped" };
-  const name = loginName(c);
+  const m = mode ?? pickIsolirMode(c.isolir_mode, await getGlobalIsolirMode(db));
   let router: ActionResult["router"] = "skipped";
   let rosNote = "tidak ada router terpasang";
   if (c.router_id && c.r_host) {
     try {
-      const conn = await connectRouter(routerCreds(c));
-      try {
-        if (c.connection_type === "hotspot") {
-          await hotspotUserEnable(conn, name);
-        } else {
-          await pppSecretEnable(conn, name);
-        }
-        router = "ok";
-        rosNote = `user "${name}" diaktifkan kembali di router`;
-      } finally {
-        conn.close();
-      }
+      const res = await openByMode(routerCreds(c), c as unknown as IsolirCustomer, m);
+      router = "ok";
+      rosNote = res.detail;
     } catch (e) {
       router = "failed";
       rosNote = `gagal di router: ${e instanceof Error ? e.message : "unknown"}`;
     }
   }
   await db`update customers set status = 'aktif', updated_at = now() where id = ${customerId}`;
-  return { ok: true, detail: `Isolir dibuka. ${rosNote}.`, router };
+  return { ok: true, detail: `Isolir dibuka (mode ${m}). ${rosNote}.`, router };
 }
 
 /**

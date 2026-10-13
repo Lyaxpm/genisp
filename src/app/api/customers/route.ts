@@ -14,13 +14,15 @@ export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
   const q = sp.get("q")?.trim() ?? "";
   const status = sp.get("status")?.trim() ?? "";
+  const includeDeleted = sp.get("include_deleted") === "1" || sp.get("include_deleted") === "true";
   const page = Math.max(1, parseInt(sp.get("page") ?? "1", 10) || 1);
   const limit = Math.min(100, Math.max(1, parseInt(sp.get("limit") ?? "20", 10) || 20));
   const offset = (page - 1) * limit;
   const db = sql();
 
   const params: unknown[] = [];
-  let where = "where 1=1";
+  // Recycle bin: pelanggan ter-soft-delete dikecualikan secara default
+  let where = includeDeleted ? "where 1=1" : "where c.deleted_at is null";
   if (q) {
     params.push(`%${q}%`);
     where += ` and (c.name ilike $${params.length} or c.code ilike $${params.length} or c.phone ilike $${params.length})`;
@@ -56,11 +58,17 @@ export async function POST(req: NextRequest) {
   let password_hash: string | null = null;
   if (body?.password) password_hash = await bcrypt.hash(String(body.password), 10);
 
+  const modeErr = body?.isolir_mode !== undefined && body?.isolir_mode !== "" && body?.isolir_mode !== null
+    && !["disable", "address-list", "profile", "filter-rule", "binding"].includes(String(body.isolir_mode))
+    ? "Mode isolir tidak valid (disable|address-list|profile|filter-rule|binding)"
+    : null;
+  if (modeErr) return fail(modeErr, 400);
+
   const row = (
     await db`insert into customers
       (code, name, email, phone, password_hash, address, no_ktp, birth_date, package_id, router_id,
        pppoe_user, pppoe_pass, connection_type, status, due_day, auto_isolir, latitude, longitude,
-       odp_id, odp_port, mac_address, sales_id, partner_id, notes, created_by)
+       odp_id, odp_port, mac_address, sales_id, partner_id, notes, isolir_mode, created_by)
       values (${code}, ${name}, ${body?.email || null}, ${phone}, ${password_hash},
         ${body?.address || null}, ${body?.no_ktp || null}, ${body?.birth_date || null},
         ${num(body?.package_id)}, ${num(body?.router_id)}, ${body?.pppoe_user || null}, ${body?.pppoe_pass || null},
@@ -68,7 +76,7 @@ export async function POST(req: NextRequest) {
         ${num(body?.due_day) ?? 10}, ${body?.auto_isolir ?? true},
         ${num(body?.latitude)}, ${num(body?.longitude)}, ${num(body?.odp_id)}, ${num(body?.odp_port)},
         ${body?.mac_address || null}, ${num(body?.sales_id)}, ${num(body?.partner_id)},
-        ${body?.notes || null}, ${s.id})
+        ${body?.notes || null}, ${body?.isolir_mode || null}, ${s.id})
       returning *`
   )[0];
   const { password_hash: _hash, ...customer } = row;
